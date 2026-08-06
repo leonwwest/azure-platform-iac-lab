@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+  <rect width="1280" height="640" fill="#0b1120"/>
+  <rect x="0" width="14" height="640" fill="#38bdf8"/>
+  <text x="78" y="92" fill="#7dd3fc" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="3">AZURE · TERRAFORM · OIDC</text>
+  <text x="78" y="172" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="700">Azure Platform IaC Lab</text>
+  <text x="78" y="222" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="25">Private networking, managed identity, observability and gated delivery</text>
+
+  <g font-family="Inter, Arial, sans-serif" font-size="21" text-anchor="middle">
+    <rect x="78" y="310" width="205" height="92" rx="12" fill="#111c32" stroke="#38bdf8" stroke-width="2"/>
+    <text x="180" y="350" fill="#e0f2fe" font-weight="700">GitHub Actions</text>
+    <text x="180" y="380" fill="#7dd3fc">short-lived OIDC</text>
+
+    <path d="M283 356 H355" stroke="#475569" stroke-width="3"/>
+    <path d="M345 347 L355 356 L345 365" fill="none" stroke="#475569" stroke-width="3"/>
+
+    <rect x="355" y="310" width="205" height="92" rx="12" fill="#111c32" stroke="#a78bfa" stroke-width="2"/>
+    <text x="458" y="350" fill="#ede9fe" font-weight="700">Terraform</text>
+    <text x="458" y="380" fill="#c4b5fd">plan · gated apply</text>
+
+    <path d="M560 356 H632" stroke="#475569" stroke-width="3"/>
+    <path d="M622 347 L632 356 L622 365" fill="none" stroke="#475569" stroke-width="3"/>
+
+    <rect x="632" y="310" width="250" height="92" rx="12" fill="#111c32" stroke="#34d399" stroke-width="2"/>
+    <text x="757" y="350" fill="#d1fae5" font-weight="700">Container Apps</text>
+    <text x="757" y="380" fill="#6ee7b7">scale 0..1 · private VNet</text>
+
+    <path d="M882 356 H954" stroke="#475569" stroke-width="3"/>
+    <path d="M944 347 L954 356 L944 365" fill="none" stroke="#475569" stroke-width="3"/>
+
+    <rect x="954" y="310" width="248" height="92" rx="12" fill="#111c32" stroke="#fbbf24" stroke-width="2"/>
+    <text x="1078" y="350" fill="#fef3c7" font-weight="700">Key Vault</text>
+    <text x="1078" y="380" fill="#fcd34d">private endpoint · RBAC</text>
+  </g>
+
+  <g font-family="Inter, Arial, sans-serif" font-size="20">
+    <rect x="78" y="490" width="1124" height="76" rx="12" fill="#0f172a" stroke="#25324a"/>
+    <text x="112" y="535" fill="#94a3b8">VERIFY</text>
+    <text x="232" y="535" fill="#e2e8f0">fmt · validate · TFLint · Trivy · Checkov · contract tests · SBOM</text>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+subscription_id = "00000000-0000-0000-0000-000000000000"
+location        = "germanywestcentral"
+environment     = "dev"
+project_name    = "platformlab"
+
+# Optional operational controls. Use a real private address only in the
+# uncommitted terraform.tfvars file or an environment variable.
+alert_email          = ""
+budget_contact_emails = []
+monthly_budget_eur    = 25
