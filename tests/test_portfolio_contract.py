@@ -44,6 +44,22 @@ class PortfolioContractTests(unittest.TestCase):
         self.assertIn('default_action = "Deny"', main)
         self.assertIn('name                = "privatelink.vaultcore.azure.net"', main)
 
+    def test_private_dns_link_uses_azurerm_v5_interface(self) -> None:
+        versions = self.read("terraform/versions.tf")
+        main = self.read("terraform/main.tf")
+        link = re.search(
+            r'resource\s+"azurerm_private_dns_zone_virtual_network_link"\s+"key_vault"\s*\{(?P<body>.*?)\n\}',
+            main,
+            re.DOTALL,
+        )
+
+        self.assertIn('version = "~> 5.0"', versions)
+        self.assertIsNotNone(link)
+        link_body = link.group("body")
+        self.assertIn("private_dns_zone_id", link_body)
+        self.assertNotIn("private_dns_zone_name", link_body)
+        self.assertNotIn("resource_group_name", link_body)
+
     def test_apply_requires_oidc_and_explicit_confirmation(self) -> None:
         workflow = self.read(".github/workflows/terraform-apply.yml")
         self.assertRegex(workflow, r"id-token:\s*write")
