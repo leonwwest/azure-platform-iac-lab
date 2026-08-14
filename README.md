@@ -6,17 +6,18 @@
 
 ![Azure Platform IaC Lab overview](assets/social-preview.svg)
 
-Production-minded Terraform for a small Azure Container Apps platform. The lab demonstrates secretless GitHub Actions authentication, managed identity, Key Vault access, observability, cost controls and approval-gated delivery without pretending that a portfolio subscription is a production tenant.
+A deployable, portfolio-scale Azure Container Apps platform built with Terraform and the AzureRM v5 provider. It demonstrates secretless GitHub Actions authentication, managed identity, private Key Vault access, observability, cost controls and approval-gated delivery.
 
 ## Recruiter quick view
 
 | Question | Evidence |
 |---|---|
-| What is provisioned? | Resource group, private-networked Container Apps, managed identity, Key Vault private endpoint and RBAC, Log Analytics, alerting and optional budget |
-| How does CI authenticate? | GitHub OIDC exchanges short-lived tokens with Microsoft Entra; no client secret is stored |
-| How is delivery controlled? | Pull requests validate and plan; apply is manual, requires an explicit confirmation input and uses a protected GitHub environment |
-| How are costs constrained? | Scale-to-zero, one-replica default, small CPU/memory allocation, optional resource-group budget and complete teardown command |
-| What is verified? | Terraform formatting and validation, TFLint, Trivy misconfiguration scan, Checkov policies and repository contract tests |
+| What is provisioned? | [Terraform](terraform/) defines a resource group, private-networked Container Apps, managed identity, Key Vault private endpoint and RBAC, Log Analytics, alerting and an optional budget |
+| Which provider baseline is used? | [AzureRM v5](terraform/versions.tf), including the v5 private DNS virtual-network-link interface covered by a [contract test](tests/test_portfolio_contract.py) |
+| How does CI authenticate? | The [plan](.github/workflows/terraform-plan.yml) and [apply](.github/workflows/terraform-apply.yml) workflows exchange GitHub OIDC tokens with Microsoft Entra; no client secret is stored |
+| How is delivery controlled? | Pull requests validate and plan; apply is manual, requires the exact `apply` confirmation and uses a protected GitHub environment |
+| How are costs constrained? | Scale-to-zero, one-replica default, small CPU/memory allocation, optional resource-group budget and a documented teardown command |
+| What is verified? | [GitHub Actions](.github/workflows/verify.yml) runs Terraform format and validation, TFLint, Trivy, Checkov and repository contract tests |
 
 ## Architecture
 
@@ -93,33 +94,31 @@ The helper creates separate plan and apply managed identities plus federated cre
 6. Run **Terraform apply (gated)** with the exact confirmation `apply`.
 7. Collect read-only evidence with `./scripts/demo.sh`.
 
-## Measurable evidence
+## Verification evidence
 
-The repository publishes verification output as a workflow artifact. After a real deployment, `scripts/demo.sh` records:
+The green workflow badge links to the latest CI run. The [verification workflow](.github/workflows/verify.yml) executes the same Terraform and security checks documented above on every pull request and push to `main`.
 
-- Container App FQDN and revision state
-- configured minimum and maximum replicas
-- managed identity attachment
-- Key Vault RBAC status
-- Log Analytics retention
-- current resource-group cost when Cost Management data is available
-
-No fabricated production numbers are included. `docs/evidence/latest.md` is created only from Azure CLI output.
-
-### Real verification run
-
-This recording comes from the actual Terraform format/validation commands and repository contract tests. It is a terminal evidence capture, not an AI-generated cloud console.
+The recording below captures Terraform format and validation plus the repository contract tests running against this codebase.
 
 ![Azure Terraform verification run](docs/demo.gif)
 
+After a deployment, [`scripts/demo.sh`](scripts/demo.sh) uses read-only Azure CLI queries to generate `docs/evidence/latest.md` with observed values for:
+
+- Container App name and HTTPS endpoint
+- configured minimum and maximum replicas
+- configured identity type
+
+The [evidence policy](docs/evidence/README.md) keeps generated deployment output separate from static verification and excludes subscription identifiers, tenant identifiers, tokens and secret values.
+
 ## Scope and limitations
 
-This is a portfolio lab, not a reusable enterprise landing-zone module. It deliberately omits regional failover, centralized Azure Policy assignment, a shared network hub and organization-wide identity governance. Those belong in a larger platform design and are tracked in the public roadmap.
+This repository is scoped to a small application platform, not an enterprise landing-zone module. Regional failover, centralized Azure Policy assignment, a shared network hub and organization-wide identity governance remain explicit extension points for a larger platform design and are tracked in the public roadmap.
 
 ## Sources
 
 - [Microsoft: GitHub Actions with Azure OIDC](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure-openid-connect)
 - [Microsoft: Key Vault references in Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/manage-secrets)
+- [HashiCorp: AzureRM provider documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
 - [HashiCorp: AzureRM backend with OIDC](https://developer.hashicorp.com/terraform/language/backend/azurerm)
 
 ## License
