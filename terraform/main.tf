@@ -102,12 +102,11 @@ resource "azurerm_private_dns_zone" "key_vault" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "key_vault" {
-  name                  = "link-${local.suffix}-key-vault"
-  resource_group_name   = azurerm_resource_group.platform.name
-  private_dns_zone_name = azurerm_private_dns_zone.key_vault.name
-  virtual_network_id    = azurerm_virtual_network.platform.id
-  registration_enabled  = false
-  tags                  = local.tags
+  name                 = "link-${local.suffix}-key-vault"
+  private_dns_zone_id  = azurerm_private_dns_zone.key_vault.id
+  virtual_network_id   = azurerm_virtual_network.platform.id
+  registration_enabled = false
+  tags                 = local.tags
 }
 
 resource "azurerm_private_endpoint" "key_vault" {
