@@ -17,7 +17,7 @@ A deployable, portfolio-scale Azure Container Apps platform built with Terraform
 | How does CI authenticate? | The [plan](.github/workflows/terraform-plan.yml) and [apply](.github/workflows/terraform-apply.yml) workflows exchange GitHub OIDC tokens with Microsoft Entra; no client secret is stored |
 | How is delivery controlled? | Pull requests validate and plan; apply is manual, requires the exact `apply` confirmation and uses a protected GitHub environment |
 | How are costs constrained? | Scale-to-zero, one-replica default, small CPU/memory allocation, optional resource-group budget and a documented teardown command |
-| What is verified? | [GitHub Actions](.github/workflows/verify.yml) runs Terraform format and validation, TFLint, Trivy, Checkov and repository contract tests |
+| What is verified? | [GitHub Actions](.github/workflows/verify.yml) runs Terraform format and validation, native policy tests, TFLint, Trivy, Checkov and repository contract tests |
 
 ## Architecture
 
@@ -46,6 +46,7 @@ The plan and apply identities are intentionally separate. The plan identity shou
 - No Azure client secrets in GitHub.
 - `terraform apply` requires the workflow input `apply` and the `production` environment.
 - Container Apps defaults to zero minimum replicas and one maximum replica.
+- Terraform policy rejects unapproved regions, incomplete governance tags, more than three replicas and a lab budget above EUR 100.
 - Key Vault uses Azure RBAC; the workload receives `Key Vault Secrets User`, not broad ownership.
 - Key Vault public access is disabled; resolution and traffic use Private DNS and a dedicated private-endpoint subnet.
 - Destructive cleanup is explicit and documented.
@@ -58,6 +59,7 @@ terraform/                  Azure resources and environment variables
 scripts/bootstrap-oidc.sh  Idempotent OIDC bootstrap helper
 scripts/demo.sh            Read-only evidence collection after deployment
 tests/                     Static portfolio and safety contract tests
+terraform/tests/           Native policy-as-code scenarios with mocked AzureRM
 .github/workflows/         Verification, OIDC plan and gated apply
 docs/                      Architecture decisions, runbook and evidence
 ```
@@ -97,6 +99,9 @@ The helper creates separate plan and apply managed identities plus federated cre
 ## Verification evidence
 
 The green workflow badge links to the latest CI run. The [verification workflow](.github/workflows/verify.yml) executes the same Terraform and security checks documented above on every pull request and push to `main`.
+
+The committed [policy verification matrix](docs/evidence/policy-verification.md) distinguishes
+offline guardrail evidence from optional live Azure deployment evidence.
 
 The recording below captures Terraform format and validation plus the repository contract tests running against this codebase.
 

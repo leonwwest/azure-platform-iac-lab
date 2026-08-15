@@ -29,7 +29,7 @@ class PortfolioContractTests(unittest.TestCase):
     def test_workload_is_small_and_scales_to_zero(self) -> None:
         main = self.read("terraform/main.tf")
         self.assertIn("min_replicas = 0", main)
-        self.assertIn("max_replicas = 1", main)
+        self.assertIn("max_replicas = var.max_replicas", main)
         self.assertIn("cpu    = 0.25", main)
         self.assertIn('memory = "0.5Gi"', main)
 
@@ -76,6 +76,20 @@ class PortfolioContractTests(unittest.TestCase):
             if path.suffix.lower() not in {".tf", ".yml", ".yaml", ".md", ".sh"}:
                 continue
             self.assertIsNone(suspicious.search(path.read_text(encoding="utf-8")), path)
+
+    def test_policy_guardrails_are_explicit_and_actionable(self) -> None:
+        variables = self.read("terraform/variables.tf")
+        locals_file = self.read("terraform/locals.tf")
+        policy_tests = self.read("terraform/tests/policy.tftest.hcl")
+
+        self.assertIn("germanywestcentral", variables)
+        self.assertIn("westeurope", variables)
+        self.assertIn('for key in ["owner", "cost-center", "purpose"]', variables)
+        self.assertIn("var.max_replicas <= 3", variables)
+        self.assertIn("var.monthly_budget_eur <= 100", variables)
+        self.assertIn("merge(var.governance_tags", locals_file)
+        self.assertIn("reject_unapproved_region", policy_tests)
+        self.assertIn("reject_missing_governance_tag", policy_tests)
 
 
 if __name__ == "__main__":

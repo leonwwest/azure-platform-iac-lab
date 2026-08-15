@@ -28,6 +28,8 @@ jobs:
         run: terraform -chdir=terraform init -backend=false
       - name: Validate
         run: terraform -chdir=terraform validate
+      - name: Policy-as-code tests
+        run: terraform -chdir=terraform test
       - name: TFLint
         run: tflint --chdir=terraform --recursive
       - name: Contract tests

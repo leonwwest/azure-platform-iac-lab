@@ -169,7 +169,7 @@ resource "azurerm_container_app" "demo" {
 
   template {
     min_replicas = 0
-    max_replicas = 1
+    max_replicas = var.max_replicas
 
     container {
       name   = "demo"

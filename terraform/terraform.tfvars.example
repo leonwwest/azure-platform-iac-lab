@@ -8,3 +8,10 @@ project_name    = "platformlab"
 alert_email          = ""
 budget_contact_emails = []
 monthly_budget_eur    = 25
+max_replicas          = 1
+
+governance_tags = {
+  owner       = "leon-westermeir"
+  cost-center = "portfolio"
+  purpose     = "portfolio-lab"
+}
