@@ -14,6 +14,11 @@ variable "location" {
   description = "Primary Azure region."
   type        = string
   default     = "germanywestcentral"
+
+  validation {
+    condition     = contains(["germanywestcentral", "westeurope"], var.location)
+    error_message = "location must be an approved EU region: germanywestcentral or westeurope."
+  }
 }
 
 variable "environment" {
@@ -67,7 +72,36 @@ variable "monthly_budget_eur" {
   default     = 25
 
   validation {
-    condition     = var.monthly_budget_eur >= 5
-    error_message = "monthly_budget_eur must be at least 5."
+    condition     = var.monthly_budget_eur >= 5 && var.monthly_budget_eur <= 100
+    error_message = "monthly_budget_eur must be between 5 and the lab guardrail of 100 EUR."
+  }
+}
+
+variable "max_replicas" {
+  description = "Maximum Container App replicas; capped for predictable portfolio-lab cost."
+  type        = number
+  default     = 1
+
+  validation {
+    condition     = var.max_replicas >= 1 && var.max_replicas <= 3
+    error_message = "max_replicas must be between 1 and the lab guardrail of 3."
+  }
+}
+
+variable "governance_tags" {
+  description = "Required ownership and cost-allocation tags applied to taggable resources."
+  type        = map(string)
+  default = {
+    owner       = "leon-westermeir"
+    cost-center = "portfolio"
+    purpose     = "portfolio-lab"
+  }
+
+  validation {
+    condition = alltrue([
+      for key in ["owner", "cost-center", "purpose"] :
+      contains(keys(var.governance_tags), key) && trimspace(lookup(var.governance_tags, key, "")) != ""
+    ])
+    error_message = "governance_tags must contain non-empty owner, cost-center and purpose values."
   }
 }
