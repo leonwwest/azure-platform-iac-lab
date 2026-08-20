@@ -67,11 +67,15 @@ docs/                      Architecture decisions, runbook and evidence
 ## Local verification
 
 ```bash
+brew install terraform trivy checkov
+brew install terraform-linters/tap/tflint
 cp terraform/terraform.tfvars.example terraform/terraform.tfvars
 make verify
 ```
 
-`make verify` uses locally installed tools when available. The same checks run in GitHub Actions, so a local Azure login is not required for static verification.
+`make verify` runs Terraform format, validation and native policy tests, TFLint, repository contract
+tests, Trivy and Checkov. The same checks run in GitHub Actions, so a local Azure login is not
+required for static verification.
 
 ## OIDC bootstrap
 
